@@ -4,7 +4,9 @@
   <home-swiper :banners="banners"></home-swiper>
   <home-recommend-view :recommend="recommend"></home-recommend-view>
   <feature-view></feature-view>
-  <li v-for="item in 10">{{item}}</li>
+  <tab-control class="tabControl" :titles="ti"></tab-control>
+
+  <li v-for="item in 100">{{item}}</li>
   </div>
 </template>
 
@@ -12,6 +14,7 @@
  import HomeSwiper from './childeComps/HomeSwiper.vue'
  import HomeRecommendView from './childeComps/HomeRecommendView.vue'
  import FeatureView from './childeComps/FeatureView.vue'
+ import tabControl from '../../components/content/tabControl/tabControl.vue'
 
 import NavBar from 'components/common/navbar/NavBar.vue'
  import {getHomeMultidata} from '../../network/home.js'
@@ -22,12 +25,19 @@ export default{
     NavBar,
     HomeSwiper,
     HomeRecommendView,
-    FeatureView
+    FeatureView,
+    tabControl
   },
   data(){
     return{
       banners:[],
-      recommend:[]
+      recommend:[],
+      ti:["流行","新款","精选"],
+      goods:{
+        'pop':{page:0,list:[]},
+        'news':{page:0,list:[]},
+        'sell':{page:0,list:[]}
+      }
     }
   },
   created(){
@@ -58,5 +68,10 @@ export default{
     right: 0;
 
     z-index: 10;
+  }
+  .tabControl{
+    position: sticky;
+    top: 44px;
+    background-color:var(--color-background);
   }
 </style>

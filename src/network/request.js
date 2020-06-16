@@ -10,7 +10,6 @@ export function request(config) {
 
   // 请求
   instance1.interceptors.request.use(config => {
-    console.log("=====以下是请求内容")
     return config
   }, err => {
 
@@ -18,7 +17,6 @@ export function request(config) {
 
   // 响应
   instance1.interceptors.response.use(res => {
-    console.log("=====以下是响应内容")
     return res.data
   }, err => {
     console.log(err);
