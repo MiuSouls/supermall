@@ -2,17 +2,18 @@
   <div class="home">
     <nav-bar class="home-nav"><div slot="nav-center">购物街</div></nav-bar>
 
-    <scroll class="content" ref="scroll">
+    <scroll class="content" ref="scroll"
+    :probeType="3"
+    :IsPullUp="true"
+    @scroll="contentScroll"
+    @PullingUp="loadMore">
       <home-swiper :banners="banners"></home-swiper>
       <home-recommend-view :recommend="recommend"></home-recommend-view>
       <feature-view></feature-view>
       <tab-control class="tabControl" :titles="ti" @tabClick="tabClick"></tab-control>
       <goods-list :goods="showGoods"></goods-list>
     </scroll>
-    <back-top class="backtop" @click.native="backClick"></back-top>
-
-
-
+    <back-top class="backtop" @click.native="backClick" v-show="!IsShowBackTop"></back-top>
   </div>
 </template>
 
@@ -22,8 +23,8 @@ import HomeRecommendView from './childeComps/HomeRecommendView.vue';
 import FeatureView from './childeComps/FeatureView.vue';
 import tabControl from '../../components/content/tabControl/tabControl.vue';
 import GoodsList from '../../components/content/goods/GoodsList.vue';
-import Scroll from '../../components/common/scroll/Scroll.vue'
-import BackTop from '../../components/content/backTop/BackTop.vue'
+import Scroll from '../../components/common/scroll/Scroll.vue';
+import BackTop from '../../components/content/backTop/BackTop.vue';
 
 import NavBar from 'components/common/navbar/NavBar.vue';
 import { getHomeMultidata, getHomeGoods } from '../../network/home.js';
@@ -50,34 +51,38 @@ export default {
         new: { page: 0, list: [] },
         sell: { page: 0, list: [] }
       },
-      currentType:'pop'
+      currentType: 'pop',
+      IsShowBackTop: null
     };
   },
-  computed:{
-    showGoods(){
-      return this.goods[this.currentType].list
+  computed: {
+    showGoods() {
+      return this.goods[this.currentType].list;
     }
   },
-  created() {
-    this.getHomeMultidata();
 
-    this.getHomeGoods('pop');
-    this.getHomeGoods('new');
-    this.getHomeGoods('sell');
-  },
   methods: {
     //返回顶部的方法
-    backClick(){
-      this.$refs.scroll.scrollTo(0,0,1000);
-      // console.log("aaaaaa");
+    backClick() {
+      this.$refs.scroll.scrollTo(0, 0, 1000);
+    },
+
+    contentScroll(position) {
+      this.IsShowBackTop = position.y > -1000;
     },
 
     //tabControl传入的值
-    tabClick(index){
-      switch(index){
-        case 0: this.currentType='pop'; break;
-        case 1: this.currentType='new'; break;
-        case 2: this.currentType='sell'; break;
+    tabClick(index) {
+      switch (index) {
+        case 0:
+          this.currentType = 'pop';
+          break;
+        case 1:
+          this.currentType = 'new';
+          break;
+        case 2:
+          this.currentType = 'sell';
+          break;
       }
     },
 
@@ -92,25 +97,39 @@ export default {
     },
     //请求TabControl的数据
     getHomeGoods(type) {
-      const page=this.goods[type].page+1;
+      const page = this.goods[type].page + 1;
       getHomeGoods(type, page)
         .then(res => {
-          this.goods[type].list.push(...res.data.list)
+          this.goods[type].list.push(...res.data.list);
         })
         .catch(err => {
           console.log(err);
         });
-        this.goods[type].page+=1;
-    }
-  },
+      this.goods[type].page += 1;
+    },
 
+    //上拉加载更多数据
+    loadMore(){
+      this.getHomeGoods(this.currentType)
+      console.log("下拉加载更多!")
+
+    }
+
+  },
+  created() {
+    this.getHomeMultidata();
+
+    this.getHomeGoods('pop');
+    this.getHomeGoods('new');
+    this.getHomeGoods('sell');
+  }
 };
 </script>
 
 <style scoped>
 .home {
   padding-top: 44px;
-/*  height: 100vh;
+  /*  height: 100vh;
   position: relative; */
 }
 .home-nav {
@@ -130,14 +149,12 @@ export default {
   background-color: var(--color-background);
   z-index: 9;
 }
-.content{
+.content {
   overflow: scroll;
   position: absolute;
   top: 44px;
   bottom: 49px;
   left: 0;
   right: 0;
-
 }
-
 </style>
