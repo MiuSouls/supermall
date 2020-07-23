@@ -1,8 +1,6 @@
 <template>
   <div class="warpper" ref="warpper">
-    <div class="content">
-      <slot></slot>
-    </div>
+    <div class="content"><slot></slot></div>
   </div>
 </template>
 
@@ -20,8 +18,13 @@ export default {
     scrollTo(x, y, time) {
       this.bscroll.scrollTo(x, y, time);
     },
+    //上拉加载更多
     finishPullUp() {
       this.bscroll.finishPullUp();
+    },
+    refresh() {
+      // this.scroll&&this.scroll.refresh()
+      this.bscroll.refresh();
     }
   },
   props: {
