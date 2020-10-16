@@ -26,6 +26,7 @@ import BackTop from '../../components/content/backTop/BackTop.vue';
 import NavBar from 'components/common/navbar/NavBar.vue';
 import { getHomeMultidata, getHomeGoods } from '../../network/home.js';
 import { debounce } from '../../common/utils.js';
+import { itemListenerMixin } from '../../common/mixin.js'
 
 export default {
   name: 'home',
@@ -39,6 +40,7 @@ export default {
     Scroll,
     BackTop
   },
+  mixins:[itemListenerMixin],
   data() {
     return {
       banners: [],
@@ -53,7 +55,8 @@ export default {
       isShowBackTop: null,
       taboffsetTop: 0,
       isTabFixed: false,
-      SaveY:0
+      SaveY: 0,
+      // itemImgGoods:null,
     };
   },
   computed: {
@@ -90,8 +93,8 @@ export default {
           this.currentType = 'sell';
           break;
       }
-      this.$refs.tabControl1.currentIndex=index;
-      this.$refs.tabControl2.currentIndex=index;
+      this.$refs.tabControl1.currentIndex = index;
+      this.$refs.tabControl2.currentIndex = index;
     },
 
     //请求轮播图和推荐的数据
@@ -119,7 +122,7 @@ export default {
     //上拉加载更多数据
     loadMore() {
       this.getHomeGoods(this.currentType);
-      console.log('下拉加载更多!');
+      // console.log('下拉加载更多!');
     },
 
     swiperImageLoad() {
@@ -149,11 +152,13 @@ export default {
     //   this.$refs.scroll.refresh();
     // });
 
+    //(已混入)
     //调用utils方法里面的防抖函数，防止频繁调用
-    const refresh = debounce(this.$refs.scroll.refresh, 50);
-    this.$bus.$on('itemImageLoad', () => {
-      refresh();
-    });
+    // const refresh = debounce(this.$refs.scroll.refresh, 50);
+    // this.itemImgGoods = () => {
+    //   refresh();
+    // };
+    // this.$bus.$on('itemImageLoad', this.itemImgGoods);
 
     //监听轮播图的图片加载完成
   }
@@ -163,8 +168,8 @@ export default {
 <style scoped>
 .home {
   /* padding-top: 44px; */
-  /*  height: 100vh;
-  position: relative; */
+  /* height: 100vh; */
+  /* position: relative; */
 }
 .home-nav {
   background-color: var(--color-tint);
